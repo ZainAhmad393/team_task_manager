@@ -1,15 +1,18 @@
 import axios from 'axios'
 
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
 /**
  * Central Axios instance.
  * All API calls route through here — credentials (session cookie) are
  * included automatically on every request.
  */
+// ✅ Ye karo — BASE_URL ko properly use karo
 const api = axios.create({
-  baseURL    : import.meta.env.VITE_API_URL || '/api',
+  baseURL        : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`,
   withCredentials: true,
-  timeout    : 20_000,
-  headers    : { 'Content-Type': 'application/json' },
+  timeout        : 20_000,
+  headers        : { 'Content-Type': 'application/json' },
 })
 
 /* ─── Response interceptor ─── */
