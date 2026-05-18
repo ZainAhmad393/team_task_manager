@@ -1,31 +1,32 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const session = require('express-session');
+require('dotenv').config()
+const express = require('express')
+const cors = require('cors')
+const helmet = require('helmet')
+const morgan = require('morgan')
+const cookieParser = require('cookie-parser')
 
-const sessionConfig = require('./config/session');
-const passport = require('./config/passport');
-const { generalLimiter } = require('./middleware/rateLimiter');
-const { errorHandler, notFound } = require('./middleware/errorHandler');
+const { generalLimiter } = require('./middleware/rateLimiter')
+const { errorHandler, notFound } = require('./middleware/errorHandler')
 
-const authRoutes = require('./routes/auth');
-const teamRoutes = require('./routes/teams');
-const taskRoutes = require('./routes/tasks');
+const authRoutes = require('./routes/auth')
+const teamRoutes = require('./routes/teams')
+const taskRoutes = require('./routes/tasks')
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+const app = express()
+const PORT = process.env.PORT || 5000
 
-// ─── Allowed origins ────────────────────────────────────────────────
+// ─── Trust proxy — MUST be first ─────────────────────────────────────
+app.set('trust proxy', 1)
+
+// ─── Allowed origins ──────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://team-task-manager-six-chi.vercel.app',   // ← your actual Vercel URL
-  process.env.CLIENT_URL,                            // ← also set this in Render
+  'https://team-task-manager-six-chi.vercel.app',
+  process.env.CLIENT_URL,
 ].filter(Boolean)
 
-// ─── Preflight handler (MUST be before everything else) ─────────────
+// ─── Preflight ────────────────────────────────────────────────────────
 app.options('/{*path}', (req, res) => {
   const origin = req.headers.origin
   if (ALLOWED_ORIGINS.includes(origin)) {
@@ -37,13 +38,11 @@ app.options('/{*path}', (req, res) => {
   }
   res.sendStatus(204)
 })
-// ─── CORS middleware ─────────────────────────────────────────────────
+
+// ─── CORS ─────────────────────────────────────────────────────────────
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (Postman, curl, server-to-server)
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-      return callback(null, true)
-    }
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) return callback(null, true)
     return callback(new Error(`CORS: Origin ${origin} not allowed`))
   },
   credentials: true,
@@ -52,50 +51,39 @@ app.use(cors({
   exposedHeaders: ['set-cookie'],
 }))
 
-// Sabse pehle yeh line add karo — Render ke liye zaroori hai
-app.set('trust proxy', 1)
+// ─── Security ─────────────────────────────────────────────────────────
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }))
 
-// ─── Security ────────────────────────────────────────────────────────
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' },
-}))
-
-// ─── Body parsing ────────────────────────────────────────────────────
+// ─── Parsing ──────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10kb' }))
 app.use(express.urlencoded({ extended: true, limit: '10kb' }))
+app.use(cookieParser())
 
-// ─── Logging ─────────────────────────────────────────────────────────
+// ─── Logging ──────────────────────────────────────────────────────────
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'))
 }
 
-// ─── Rate limiting ───────────────────────────────────────────────────
+// ─── Rate limiting ────────────────────────────────────────────────────
 app.use('/api/', generalLimiter)
 
-// ─── Session + Passport ──────────────────────────────────────────────
-app.use(session(sessionConfig))
-app.use(passport.initialize())
-app.use(passport.session())
+// ─── Health check ─────────────────────────────────────────────────────
+app.get('/health', (req, res) => res.json({
+  status: 'ok',
+  timestamp: new Date().toISOString(),
+  env: process.env.NODE_ENV,
+}))
 
-// ─── Health check ────────────────────────────────────────────────────
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    env: process.env.NODE_ENV,
-  })
-})
-
-// ─── Routes ──────────────────────────────────────────────────────────
+// ─── Routes ───────────────────────────────────────────────────────────
 app.use('/api/auth',  authRoutes)
 app.use('/api/teams', teamRoutes)
 app.use('/api/tasks', taskRoutes)
 
-// ─── Error handling ──────────────────────────────────────────────────
+// ─── Error handling ───────────────────────────────────────────────────
 app.use(notFound)
 app.use(errorHandler)
 
-// ─── Start ───────────────────────────────────────────────────────────
+// ─── Start ────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`)
   console.log(`   Allowed origins: ${ALLOWED_ORIGINS.join(', ')}`)
