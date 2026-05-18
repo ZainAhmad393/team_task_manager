@@ -6,7 +6,7 @@ import useAuthStore from './context/Authstore'
 import AppLayout from './components/Applayout'
 
 // Auth guards
-import { ProtectedRoute, PublicRoute } from './components/ProtectedRoute'
+import { ProtectedRoute, PublicRoute } from './components/Protectedroute'
 
 // Pages
 import Login        from './pages/Login'
