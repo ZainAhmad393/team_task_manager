@@ -26,7 +26,7 @@ const ALLOWED_ORIGINS = [
 ].filter(Boolean)
 
 // ─── Preflight handler (MUST be before everything else) ─────────────
-app.options('*', (req, res) => {
+app.options('/{*path}', (req, res) => {
   const origin = req.headers.origin
   if (ALLOWED_ORIGINS.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin)
@@ -37,7 +37,6 @@ app.options('*', (req, res) => {
   }
   res.sendStatus(204)
 })
-
 // ─── CORS middleware ─────────────────────────────────────────────────
 app.use(cors({
   origin: (origin, callback) => {
