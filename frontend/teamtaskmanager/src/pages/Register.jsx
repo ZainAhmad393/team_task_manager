@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import useAuthStore from '../context/Authstore'
-
+import logo from '../assets/logo.png'
 /* ─── Password strength ─── */
 function getStrength(pw) {
   if (!pw) return { score: 0, label: '', color: 'transparent' }
@@ -172,7 +172,9 @@ export default function Register() {
           <div style={S.blob1} /><div style={S.blob2} /><div style={S.grid} />
 
           <div style={S.logo}>
-            <div style={S.logoMark}>TF</div>
+            <div style={S.logoMark}>
+  <img src={logo} alt="TaskFlow" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 11 }} />
+</div>
             TaskFlow
           </div>
 

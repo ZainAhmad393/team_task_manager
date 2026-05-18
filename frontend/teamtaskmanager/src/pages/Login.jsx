@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import useAuthStore from '../context/Authstore'
-
+import logo from '../assets/logo.png'
 /* ─── tiny hook: animated counter ─── */
 function useCount(target, duration = 1400) {
   const [val, setVal] = useState(0)
@@ -428,7 +428,9 @@ export default function Login() {
 
           {/* Logo */}
           <div style={S.logo}>
-            <div style={S.logoMark}>TF</div>
+            <div style={S.logoMark}>
+  <img src={logo} alt="TaskFlow" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 11 }} />
+</div>
             TaskFlow
           </div>
 
