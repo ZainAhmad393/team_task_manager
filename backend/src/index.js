@@ -20,10 +20,18 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    process.env.CLIENT_URL,
-  ].filter(Boolean),
+  origin: function(origin, callback) {
+    const allowed = [
+      'http://localhost:5173',
+      'https://team-task-manager-pearl-three.vercel.app',
+      process.env.CLIENT_URL,
+    ]
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
