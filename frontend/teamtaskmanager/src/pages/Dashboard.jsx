@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { format, isAfter } from 'date-fns'
 import { tasksApi, teamsApi } from '../services/api'
 import { StatusBadge, PriorityBadge, LoadingPage, EmptyState, Avatar } from '../components/ui/index.jsx'
-import TaskFormModal from '../components/TaskFormModal'
-import useAuthStore from '../context/authStore'
+import TaskFormModal from '../components/Taskformmodal.jsx'
+import useAuthStore from '../context/Authstore'
 
 /* ── Stat Card ── */
 function StatCard({ label, value, sub, icon, accentColor, accentBg }) {

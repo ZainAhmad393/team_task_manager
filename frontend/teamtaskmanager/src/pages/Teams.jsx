@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { teamsApi } from '../services/api'
-import TeamCard from '../components/TeamCard'
-import TeamFormModal from '../components/TeamFormModal'
+import TeamCard from '../components/Teamcard.jsx'
+import TeamFormModal from '../components/Teamformmodal.jsx'
 import { LoadingPage, EmptyState } from '../components/ui/index.jsx'
-import useAuthStore from '../context/authStore'
+import useAuthStore from '../context/Authstore.js'
 import toast from 'react-hot-toast'
 
 export default function Teams() {

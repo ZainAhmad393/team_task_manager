@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
-import { tasksApi, teamsApi } from '../services/api'
-import TaskCard from '../components/TaskCard'
-import TaskFormModal from '../components/TaskFormModal'
-import TaskDetailModal from '../components/TaskDetailModal'
+import { tasksApi, teamsApi } from '../services/api.js'
+import TaskCard from '../components/Taskcard.jsx'
+import TaskFormModal from '../components/Taskformmodal.jsx'
+import TaskDetailModal from '../components/Taskdetailmodal.jsx'
 import { LoadingPage, EmptyState, Spinner } from '../components/ui/index.jsx'
 import toast from 'react-hot-toast'
 

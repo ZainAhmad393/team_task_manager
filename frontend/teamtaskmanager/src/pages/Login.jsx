@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import useAuthStore from '../context/authStore'
+import useAuthStore from '../context/Authstore'
 
 /* ─── tiny hook: animated counter ─── */
 function useCount(target, duration = 1400) {
