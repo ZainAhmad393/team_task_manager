@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import useAuthStore from '../context/authStore'
 import { Avatar, Spinner } from './ui/index.jsx'
+import logo from '../assets/logo.png'
 
 /* ── Icons ── */
 const Icons = {
@@ -115,20 +116,18 @@ export default function Sidebar({ teams = [], onClose }) {
         className="px-5 h-14 flex items-center gap-2.5 flex-shrink-0"
         style={{ borderBottom: '1px solid var(--surface-100)' }}
       >
-        <div
-          className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-          style={{
-            background: 'linear-gradient(135deg, var(--brand-500), var(--brand-700))',
-            boxShadow: 'var(--shadow-brand)',
-          }}
+        {/* ✅ Fixed: import-based logo with proper sizing */}
+        <img
+          src={logo}
+          alt="TaskFlow"
+          className="w-7 h-7 object-contain flex-shrink-0"
+        />
+        <p
+          className="font-bold text-sm tracking-tight leading-none"
+          style={{ color: 'var(--surface-900)' }}
         >
-          <span className="text-white text-[11px] font-bold tracking-tight">TF</span>
-        </div>
-        <div>
-          <p className="font-bold text-sm tracking-tight leading-none" style={{ color: 'var(--surface-900)' }}>
-            TaskFlow
-          </p>
-        </div>
+          TaskFlow
+        </p>
       </div>
 
       {/* ── Navigation ── */}
