@@ -18,7 +18,7 @@ const sessionConfig = {
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: process.env.COOKIE_SECURE === 'true',
+    secure: process.env.NODE_ENV === 'production',  // ← COOKIE_SECURE pe depend mat karo
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: parseInt(process.env.SESSION_MAX_AGE) || 7 * 24 * 60 * 60 * 1000,
   },

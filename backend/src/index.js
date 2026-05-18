@@ -52,6 +52,9 @@ app.use(cors({
   exposedHeaders: ['set-cookie'],
 }))
 
+// Sabse pehle yeh line add karo — Render ke liye zaroori hai
+app.set('trust proxy', 1)
+
 // ─── Security ────────────────────────────────────────────────────────
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
