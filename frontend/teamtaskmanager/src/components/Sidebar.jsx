@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import useAuthStore from '../context/authStore'
+import useAuthStore from '../context/Authstore.js'
 import { Avatar, Spinner } from './ui/index.jsx'
 import logo from '../assets/logo.png'
 

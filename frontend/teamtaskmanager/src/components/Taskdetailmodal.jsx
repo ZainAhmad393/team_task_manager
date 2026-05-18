@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import Modal from './Modal'
 import { StatusBadge, PriorityBadge, Avatar, Spinner } from './ui/index.jsx'
 import { tasksApi } from '../services/api'
-import useAuthStore from '../context/authStore'
+import useAuthStore from '../context/Authstore.js'
 import toast from 'react-hot-toast'
 
 /* ── Meta Cell ── */
