@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import useAuthStore from './context/authStore'
+import useAuthStore from './context/Authstore'
 
 // Layout
 import AppLayout from './components/AppLayout'
