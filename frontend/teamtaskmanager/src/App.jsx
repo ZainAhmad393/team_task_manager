@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import useAuthStore from './context/Authstore'
 
 // Layout
-import AppLayout from './components/AppLayout'
+import AppLayout from './components/Applayout'
 
 // Auth guards
 import { ProtectedRoute, PublicRoute } from './components/ProtectedRoute'
