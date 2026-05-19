@@ -9,26 +9,51 @@ function DueDateChip({ date, status }) {
   const dueToday = isToday(d)
   const daysLeft = differenceInDays(d, new Date())
 
-  let colorClass = 'text-[var(--surface-400)]'
+  let textColor = 'var(--surface-400)'
+  let textDecoration = 'none'
+  let fontWeight = '400'
   let label = format(d, 'MMM d')
   let icon = null
+  let iconBg = null
+  let iconColor = null
 
   if (status === 'COMPLETED') {
-    colorClass = 'text-[var(--surface-300)] line-through'
+    textColor = 'var(--surface-300)'
+    textDecoration = 'line-through'
   } else if (overdue) {
-    colorClass = 'text-[var(--danger-text)] font-semibold'
+    textColor = 'var(--danger-text)'
+    fontWeight = '600'
+    iconBg = 'var(--danger-bg)'
+    iconColor = 'var(--danger-text)'
     icon = (
-      <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[var(--danger-bg)] text-[var(--danger-text)] text-[9px] font-bold flex-shrink-0">!</span>
+      <span 
+        className="inline-flex items-center justify-center w-4 h-4 rounded-full text-[9px] font-bold flex-shrink-0"
+        style={{
+          backgroundColor: iconBg,
+          color: iconColor,
+        }}
+      >
+        !
+      </span>
     )
   } else if (dueToday) {
-    colorClass = 'text-[var(--warning-text)] font-semibold'
+    textColor = 'var(--warning-text)'
+    fontWeight = '600'
     label = 'Today'
   } else if (daysLeft <= 2) {
-    colorClass = 'text-[var(--warning-text)] font-medium'
+    textColor = 'var(--warning-text)'
+    fontWeight = '500'
   }
 
   return (
-    <span className={`inline-flex items-center gap-1 text-[11.5px] ${colorClass}`}>
+    <span 
+      className="inline-flex items-center gap-1 text-[11.5px]"
+      style={{
+        color: textColor,
+        textDecoration,
+        fontWeight,
+      }}
+    >
       {icon}
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="opacity-50 flex-shrink-0">
         <rect x="1" y="2" width="8" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>

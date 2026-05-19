@@ -1,20 +1,65 @@
 export const statusConfig = {
-  PENDING: { label: 'Pending', color: 'bg-amber-50 text-amber-700 border-amber-200', dot: 'bg-amber-400' },
-  IN_PROGRESS: { label: 'In Progress', color: 'bg-blue-50 text-blue-700 border-blue-200', dot: 'bg-blue-500' },
-  COMPLETED: { label: 'Completed', color: 'bg-emerald-50 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500' },
+  PENDING: { 
+    label: 'Pending', 
+    bg: 'var(--warning-bg)',
+    text: 'var(--warning-text)',
+    border: 'var(--warning-border)',
+    dot: 'bg-amber-400'
+  },
+  IN_PROGRESS: { 
+    label: 'In Progress', 
+    bg: 'var(--info-bg)',
+    text: 'var(--info-text)',
+    border: 'var(--info-border)',
+    dot: 'bg-blue-500'
+  },
+  COMPLETED: { 
+    label: 'Completed', 
+    bg: 'var(--success-bg)',
+    text: 'var(--success-text)',
+    border: 'var(--success-border)',
+    dot: 'bg-emerald-500'
+  },
 }
 
 export const priorityConfig = {
-  LOW: { label: 'Low', color: 'bg-gray-50 text-gray-600 border-gray-200' },
-  MEDIUM: { label: 'Medium', color: 'bg-blue-50 text-blue-600 border-blue-200' },
-  HIGH: { label: 'High', color: 'bg-orange-50 text-orange-600 border-orange-200' },
-  URGENT: { label: 'Urgent', color: 'bg-red-50 text-red-600 border-red-200' },
+  LOW: { 
+    label: 'Low', 
+    bg: 'var(--surface-100)',
+    text: 'var(--surface-500)',
+    border: 'var(--surface-200)'
+  },
+  MEDIUM: { 
+    label: 'Medium', 
+    bg: 'var(--info-bg)',
+    text: 'var(--info-text)',
+    border: 'var(--info-border)'
+  },
+  HIGH: { 
+    label: 'High', 
+    bg: 'var(--warning-bg)',
+    text: 'var(--warning-text)',
+    border: 'var(--warning-border)'
+  },
+  URGENT: { 
+    label: 'Urgent', 
+    bg: 'var(--danger-bg)',
+    text: 'var(--danger-text)',
+    border: 'var(--danger-border)'
+  },
 }
 
 export function StatusBadge({ status }) {
   const config = statusConfig[status] || statusConfig.PENDING
   return (
-    <span className={`badge border ${config.color}`}>
+    <span 
+      className="badge border"
+      style={{
+        backgroundColor: config.bg,
+        color: config.text,
+        borderColor: config.border,
+      }}
+    >
       <span className={`w-1.5 h-1.5 rounded-full ${config.dot}`} />
       {config.label}
     </span>
@@ -24,7 +69,14 @@ export function StatusBadge({ status }) {
 export function PriorityBadge({ priority }) {
   const config = priorityConfig[priority] || priorityConfig.MEDIUM
   return (
-    <span className={`badge border ${config.color}`}>
+    <span 
+      className="badge border"
+      style={{
+        backgroundColor: config.bg,
+        color: config.text,
+        borderColor: config.border,
+      }}
+    >
       {config.label}
     </span>
   )
