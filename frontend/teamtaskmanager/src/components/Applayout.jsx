@@ -3,20 +3,10 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import { teamsApi } from '../services/api'
 
-/**
- * AppLayout
- * This component MUST be rendered inside <ProtectedRoute>.
- * It provides the sidebar + main content shell for all protected pages.
- *
- * FIX: Previously, the sidebar was not showing because AppLayout was not
- * correctly nested inside the protected route tree. The fix is in App.jsx —
- * AppLayout now wraps all protected page routes as a parent <Route>.
- */
 export default function AppLayout() {
-  const [teams, setTeams]     = useState([])
+  const [teams, setTeams] = useState([])
   const [sidebarOpen, setSidebar] = useState(false)
 
-  /* Load teams for sidebar team list */
   const loadTeams = () => {
     teamsApi.getAll()
       .then(({ data }) => setTeams(data.teams || []))
@@ -25,49 +15,54 @@ export default function AppLayout() {
 
   useEffect(() => { loadTeams() }, [])
 
-  const closeSidebar = () => setSidebar(false)
-
   return (
-    <div className="flex h-screen overflow-hidden bg-surface-50">
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#f8f8fc' }}>
 
-      {/* ── Desktop Sidebar (always visible lg+) ── */}
-      <div className="hidden lg:block flex-shrink-0 h-full">
+      {/* Desktop Sidebar */}
+      <div style={{ display: 'none' }} className="lg-sidebar">
         <Sidebar teams={teams} onTeamsChange={loadTeams} />
       </div>
 
-      {/* ── Mobile Sidebar overlay ── */}
+      {/* Mobile Sidebar */}
       {sidebarOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
-          {/* Backdrop */}
+        <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex' }}>
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
-            onClick={closeSidebar}
+            style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }}
+            onClick={() => setSidebar(false)}
           />
-          {/* Drawer */}
-          <div className="relative z-10 flex h-full animate-slide-in-left">
-            <Sidebar teams={teams} onClose={closeSidebar} onTeamsChange={loadTeams} />
+          <div style={{ position: 'relative', zIndex: 10, display: 'flex', height: '100%' }}>
+            <Sidebar teams={teams} onClose={() => setSidebar(false)} onTeamsChange={loadTeams} />
           </div>
         </div>
       )}
 
-      {/* ── Main Content Area ── */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      {/* Main Content */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
 
-        {/* Mobile top bar */}
-        <header className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-surface-200 flex-shrink-0 z-10">
-          <div className="flex items-center gap-2.5">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}
-            >
-              <span className="text-white text-[11px] font-bold">TF</span>
+        {/* Mobile Header */}
+        <header className="mobile-header" style={{
+          display: 'none',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '12px 16px',
+          background: 'white',
+          borderBottom: '1px solid #e8e8f2',
+          flexShrink: 0,
+          zIndex: 10
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{
+              width: 28, height: 28, borderRadius: 8,
+              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+              <span style={{ color: 'white', fontSize: 11, fontWeight: 700 }}>TF</span>
             </div>
-            <span className="font-bold text-sm text-surface-900 tracking-tight">TaskFlow</span>
+            <span style={{ fontWeight: 700, fontSize: 14, color: '#14142a' }}>TaskFlow</span>
           </div>
           <button
             onClick={() => setSidebar(true)}
-            className="p-2 rounded-xl hover:bg-surface-100 text-surface-600 transition-colors"
-            aria-label="Open navigation menu"
+            style={{ padding: 8, borderRadius: 12, border: 'none', background: 'transparent', cursor: 'pointer', color: '#505068' }}
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
@@ -75,11 +70,21 @@ export default function AppLayout() {
           </button>
         </header>
 
-        {/* Page content — Outlet renders the matched child route */}
-        <main className="flex-1 overflow-y-auto">
+        <main style={{ flex: 1, overflowY: 'auto' }}>
           <Outlet context={{ teams, reloadTeams: loadTeams }} />
         </main>
       </div>
+
+      <style>{`
+        @media (min-width: 1024px) {
+          .lg-sidebar { display: flex !important; flex-shrink: 0; height: 100%; }
+          .mobile-header { display: none !important; }
+        }
+        @media (max-width: 1023px) {
+          .lg-sidebar { display: none !important; }
+          .mobile-header { display: flex !important; }
+        }
+      `}</style>
     </div>
   )
 }

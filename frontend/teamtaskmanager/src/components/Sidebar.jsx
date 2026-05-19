@@ -118,10 +118,10 @@ export default function Sidebar({ teams = [], onClose }) {
       >
         {/* ✅ Fixed: import-based logo with proper sizing */}
         <img
-          src={logo}
-          alt="TaskFlow"
-          className="w-7 h-7 object-contain flex-shrink-0"
-        />
+  src={logo}
+  alt="TaskFlow"
+  style={{ width: 28, height: 28, objectFit: 'contain', flexShrink: 0, display: 'block' }}
+/>
         <p
           className="font-bold text-sm tracking-tight leading-none"
           style={{ color: 'var(--surface-900)' }}
