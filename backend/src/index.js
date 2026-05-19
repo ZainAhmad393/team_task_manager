@@ -22,7 +22,7 @@ app.set('trust proxy', 1)
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://team-task-manager-six-chi.vercel.app',
+  'https://team-task-manager-ten-flax.vercel.app',
   process.env.CLIENT_URL,
 ].filter(Boolean)
 
