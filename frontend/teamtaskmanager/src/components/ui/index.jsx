@@ -5,9 +5,9 @@
 
 /* ── Status config ── */
 export const STATUS_CONFIG = {
-  PENDING:     { label: 'Pending',     cls: 'status-pending',   dot: 'bg-warning-500' },
-  IN_PROGRESS: { label: 'In Progress', cls: 'status-progress',  dot: 'bg-info-500' },
-  COMPLETED:   { label: 'Completed',   cls: 'status-completed', dot: 'bg-success-500' },
+  PENDING:     { label: 'Pending',     cls: 'status-pending',   dot: 'bg-amber-400' },
+  IN_PROGRESS: { label: 'In Progress', cls: 'status-progress',  dot: 'bg-blue-500' },
+  COMPLETED:   { label: 'Completed',   cls: 'status-completed', dot: 'bg-emerald-500' },
 }
 
 /* ── Priority config ── */
@@ -139,17 +139,25 @@ export function SkeletonTaskRow() {
   )
 }
 
-/* ─── Avatar ─── */
-const AVATAR_COLORS = [
-  'bg-violet-500', 'bg-blue-500',   'bg-emerald-500',
-  'bg-orange-500', 'bg-rose-500',   'bg-cyan-500',
-  'bg-fuchsia-500', 'bg-teal-500',
+/* ─── Avatar ───
+   IMPORTANT: Avatar background colors are mapped via inline style (not dynamic
+   Tailwind classes) so they are never purged in production builds.
+*/
+const AVATAR_PALETTE = [
+  '#7c3aed', // violet
+  '#3b82f6', // blue
+  '#10b981', // emerald
+  '#f97316', // orange
+  '#f43f5e', // rose
+  '#06b6d4', // cyan
+  '#d946ef', // fuchsia
+  '#14b8a6', // teal
 ]
 
 export function Avatar({ name, size = 'md', className = '' }) {
-  const color = name
-    ? AVATAR_COLORS[name.charCodeAt(0) % AVATAR_COLORS.length]
-    : 'bg-surface-300'
+  const bg = name
+    ? AVATAR_PALETTE[name.charCodeAt(0) % AVATAR_PALETTE.length]
+    : '#c4c4d4'
 
   const sizes = {
     xs:   'w-6 h-6 text-[10px]',
@@ -163,11 +171,12 @@ export function Avatar({ name, size = 'md', className = '' }) {
   return (
     <div
       className={`
-        ${sizes[size]} ${color}
+        ${sizes[size]}
         rounded-full flex items-center justify-center
         text-white font-semibold flex-shrink-0 select-none
         ${className}
       `}
+      style={{ backgroundColor: bg }}
       title={name}
     >
       {name?.charAt(0).toUpperCase() ?? '?'}

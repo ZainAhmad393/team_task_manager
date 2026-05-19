@@ -21,8 +21,10 @@ app.set('trust proxy', 1)
 // ─── Allowed origins ──────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
+   'http://localhost:4173',
   'http://localhost:3000',
   'https://team-task-manager-ten-flax.vercel.app',
+  'https://teamtaskmanageralpha.netlify.app/login',
   process.env.CLIENT_URL,
 ].filter(Boolean)
 

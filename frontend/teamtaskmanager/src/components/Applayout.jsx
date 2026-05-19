@@ -16,53 +16,47 @@ export default function AppLayout() {
   useEffect(() => { loadTeams() }, [])
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#f8f8fc' }}>
+    <div className="flex h-screen overflow-hidden bg-surface-50">
 
-      {/* Desktop Sidebar */}
-      <div style={{ display: 'none' }} className="lg-sidebar">
+      {/*
+        ── Desktop Sidebar ──
+        Hidden below lg via Tailwind's responsive prefix (safe in production
+        because "hidden" and "lg:flex" are static strings, not dynamic).
+      */}
+      <div className="hidden lg:flex flex-shrink-0 h-full">
         <Sidebar teams={teams} onTeamsChange={loadTeams} />
       </div>
 
-      {/* Mobile Sidebar */}
+      {/* Mobile Sidebar overlay */}
       {sidebarOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex' }}>
+        <div className="fixed inset-0 z-50 flex lg:hidden">
+          {/* Backdrop */}
           <div
-            style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }}
+            className="absolute inset-0 bg-black/50"
             onClick={() => setSidebar(false)}
           />
-          <div style={{ position: 'relative', zIndex: 10, display: 'flex', height: '100%' }}>
+          {/* Drawer */}
+          <div className="relative z-10 flex h-full">
             <Sidebar teams={teams} onClose={() => setSidebar(false)} onTeamsChange={loadTeams} />
           </div>
         </div>
       )}
 
-      {/* Main Content */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
-        {/* Mobile Header */}
-        <header className="mobile-header" style={{
-          display: 'none',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '12px 16px',
-          background: 'white',
-          borderBottom: '1px solid #e8e8f2',
-          flexShrink: 0,
-          zIndex: 10
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{
-              width: 28, height: 28, borderRadius: 8,
-              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}>
-              <span style={{ color: 'white', fontSize: 11, fontWeight: 700 }}>TF</span>
+        {/* Mobile header — only rendered below lg */}
+        <header className="flex lg:hidden items-center justify-between px-4 py-3 bg-white border-b border-surface-150 flex-shrink-0 z-10">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center">
+              <span className="text-white text-[10px] font-bold">TF</span>
             </div>
-            <span style={{ fontWeight: 700, fontSize: 14, color: '#14142a' }}>TaskFlow</span>
+            <span className="font-bold text-sm text-surface-900">TaskFlow</span>
           </div>
           <button
             onClick={() => setSidebar(true)}
-            style={{ padding: 8, borderRadius: 12, border: 'none', background: 'transparent', cursor: 'pointer', color: '#505068' }}
+            className="p-2 rounded-xl border-none bg-transparent cursor-pointer text-surface-500 hover:bg-surface-100 transition-colors"
+            aria-label="Open menu"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
@@ -70,21 +64,10 @@ export default function AppLayout() {
           </button>
         </header>
 
-        <main style={{ flex: 1, overflowY: 'auto' }}>
+        <main className="flex-1 overflow-y-auto">
           <Outlet context={{ teams, reloadTeams: loadTeams }} />
         </main>
       </div>
-
-      <style>{`
-        @media (min-width: 1024px) {
-          .lg-sidebar { display: flex !important; flex-shrink: 0; height: 100%; }
-          .mobile-header { display: none !important; }
-        }
-        @media (max-width: 1023px) {
-          .lg-sidebar { display: none !important; }
-          .mobile-header { display: flex !important; }
-        }
-      `}</style>
     </div>
   )
 }
