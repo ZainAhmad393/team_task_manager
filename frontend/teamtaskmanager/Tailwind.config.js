@@ -1,6 +1,36 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+
+  safelist: [
+    { pattern: /^bg-surface-/ },
+    { pattern: /^bg-brand-/ },
+    { pattern: /^bg-success-/ },
+    { pattern: /^bg-warning-/ },
+    { pattern: /^bg-danger-/ },
+    { pattern: /^bg-info-/ },
+    { pattern: /^text-surface-/ },
+    { pattern: /^text-brand-/ },
+    { pattern: /^text-success-/ },
+    { pattern: /^text-warning-/ },
+    { pattern: /^text-danger-/ },
+    { pattern: /^text-info-/ },
+    { pattern: /^border-surface-/ },
+    { pattern: /^border-brand-/ },
+    { pattern: /^border-success-/ },
+    { pattern: /^border-warning-/ },
+    { pattern: /^border-danger-/ },
+    { pattern: /^border-info-/ },
+    { pattern: /^hover:bg-surface-/ },
+    { pattern: /^hover:bg-brand-/ },
+    { pattern: /^hover:text-surface-/ },
+    { pattern: /^hover:text-brand-/ },
+    { pattern: /^hover:border-surface-/ },
+    { pattern: /^ring-brand-/ },
+    { pattern: /^shadow-/ },
+    { pattern: /^rounded-/ },
+  ],
+
   theme: {
     extend: {
       fontFamily: {
