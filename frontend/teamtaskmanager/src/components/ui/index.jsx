@@ -1,85 +1,226 @@
 /* ─────────────────────────────────────────────────────────
-   Enterprise UI Primitives
+   Enterprise UI Primitives — Inline Styles Only
    Badges · Spinners · Empty States · Skeletons · Avatars
    ───────────────────────────────────────────────────────── */
 
-/* ── Status config ── */
+// ── Design token values (from index.css) ────────────────────────────────────
+const tokens = {
+  // surfaces
+  surface50:  '#f8f8fc',
+  surface100: '#f0f0f8',
+  surface150: '#e8e8f2',
+  surface200: '#dddde8',
+  surface300: '#c8c8d8',
+  surface400: '#9898b0',
+  surface500: '#6e6e88',
+  surface600: '#505068',
+  surface700: '#363650',
+  surface800: '#22223a',
+  surface900: '#14142a',
+  // brand
+  brand600:   '#5048e5',
+  // semantic
+  successBg:     '#f0fdf4',
+  successBorder: '#bbf7d0',
+  successText:   '#16a34a',
+  warningBg:     '#fffbeb',
+  warningBorder: '#fde68a',
+  warningText:   '#d97706',
+  dangerBg:      '#fff1f2',
+  dangerBorder:  '#fecdd3',
+  dangerText:    '#e11d48',
+  infoBg:        '#eff6ff',
+  infoBorder:    '#bfdbfe',
+  infoText:      '#2563eb',
+}
+
+// ── Avatar palette ───────────────────────────────────────────────────────────
+const AVATAR_PALETTE = [
+  '#7c3aed', '#3b82f6', '#10b981', '#f97316',
+  '#f43f5e', '#06b6d4', '#d946ef', '#14b8a6',
+]
+
+// ── Shared badge base ────────────────────────────────────────────────────────
+const badgeBase = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 5,
+  padding: '3px 9px',
+  fontSize: 11.5,
+  fontWeight: 600,
+  borderRadius: 99,
+  whiteSpace: 'nowrap',
+  fontFamily: "'DM Sans', system-ui, sans-serif",
+}
+
+// ── STATUS_CONFIG / PRIORITY_CONFIG (backward compat) ───────────────────────
 export const STATUS_CONFIG = {
-  PENDING:     { label: 'Pending',     cls: 'status-pending',   dot: 'bg-amber-400' },
-  IN_PROGRESS: { label: 'In Progress', cls: 'status-progress',  dot: 'bg-blue-500' },
-  COMPLETED:   { label: 'Completed',   cls: 'status-completed', dot: 'bg-emerald-500' },
+  PENDING:     { label: 'Pending',     dotColor: '#f59e0b' },
+  IN_PROGRESS: { label: 'In Progress', dotColor: '#3b82f6' },
+  COMPLETED:   { label: 'Completed',   dotColor: '#10b981' },
 }
 
-/* ── Priority config ── */
 export const PRIORITY_CONFIG = {
-  LOW:    { label: 'Low',    cls: 'priority-low',    icon: '↓' },
-  MEDIUM: { label: 'Medium', cls: 'priority-medium', icon: '→' },
-  HIGH:   { label: 'High',   cls: 'priority-high',   icon: '↑' },
-  URGENT: { label: 'Urgent', cls: 'priority-urgent', icon: '⚠' },
+  LOW:    { label: 'Low',    icon: '↓' },
+  MEDIUM: { label: 'Medium', icon: '→' },
+  HIGH:   { label: 'High',   icon: '↑' },
+  URGENT: { label: 'Urgent', icon: '⚠' },
 }
 
-/* ─── StatusBadge ─── */
+// ── StatusBadge ──────────────────────────────────────────────────────────────
+const STATUS_STYLES = {
+  PENDING: {
+    background: tokens.warningBg,
+    color: tokens.warningText,
+    border: `1px solid ${tokens.warningBorder}`,
+    dotColor: '#f59e0b',
+    label: 'Pending',
+  },
+  IN_PROGRESS: {
+    background: tokens.infoBg,
+    color: tokens.infoText,
+    border: `1px solid ${tokens.infoBorder}`,
+    dotColor: '#3b82f6',
+    label: 'In Progress',
+  },
+  COMPLETED: {
+    background: tokens.successBg,
+    color: tokens.successText,
+    border: `1px solid ${tokens.successBorder}`,
+    dotColor: '#10b981',
+    label: 'Completed',
+  },
+}
+
 export function StatusBadge({ status }) {
-  const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.PENDING
+  const cfg = STATUS_STYLES[status] || STATUS_STYLES.PENDING
   return (
-    <span className={cfg.cls}>
-      <span className={`badge-dot ${cfg.dot}`} />
+    <span style={{ ...badgeBase, background: cfg.background, color: cfg.color, border: cfg.border }}>
+      <span style={{ width: 6, height: 6, borderRadius: '50%', background: cfg.dotColor, flexShrink: 0 }} />
       {cfg.label}
     </span>
   )
 }
 
-/* ─── PriorityBadge ─── */
+// ── PriorityBadge ────────────────────────────────────────────────────────────
+const PRIORITY_STYLES = {
+  LOW: {
+    background: tokens.surface100,
+    color: tokens.surface500,
+    border: `1px solid ${tokens.surface200}`,
+    icon: '↓', label: 'Low',
+  },
+  MEDIUM: {
+    background: tokens.infoBg,
+    color: tokens.infoText,
+    border: `1px solid ${tokens.infoBorder}`,
+    icon: '→', label: 'Medium',
+  },
+  HIGH: {
+    background: tokens.warningBg,
+    color: tokens.warningText,
+    border: `1px solid ${tokens.warningBorder}`,
+    icon: '↑', label: 'High',
+  },
+  URGENT: {
+    background: tokens.dangerBg,
+    color: tokens.dangerText,
+    border: `1px solid ${tokens.dangerBorder}`,
+    icon: '⚠', label: 'Urgent',
+  },
+}
+
 export function PriorityBadge({ priority }) {
-  const cfg = PRIORITY_CONFIG[priority] || PRIORITY_CONFIG.MEDIUM
+  const cfg = PRIORITY_STYLES[priority] || PRIORITY_STYLES.MEDIUM
   return (
-    <span className={cfg.cls}>
-      <span className="font-mono text-[10px] opacity-70">{cfg.icon}</span>
+    <span style={{ ...badgeBase, background: cfg.background, color: cfg.color, border: cfg.border }}>
+      <span style={{ fontFamily: 'monospace', fontSize: 10, opacity: 0.7 }}>{cfg.icon}</span>
       {cfg.label}
     </span>
   )
 }
 
-/* ─── Spinner ─── */
-export function Spinner({ size = 'md', className = '' }) {
-  const sizes = {
-    xs: 'w-3.5 h-3.5 border',
-    sm: 'w-4 h-4 border-2',
-    md: 'w-5 h-5 border-2',
-    lg: 'w-6 h-6 border-2',
-    xl: 'w-8 h-8 border-2',
-  }
+// ── Spinner ──────────────────────────────────────────────────────────────────
+const SPINNER_SIZES = {
+  xs: { width: 14, height: 14, borderWidth: 1.5 },
+  sm: { width: 16, height: 16, borderWidth: 2 },
+  md: { width: 20, height: 20, borderWidth: 2 },
+  lg: { width: 24, height: 24, borderWidth: 2 },
+  xl: { width: 32, height: 32, borderWidth: 2 },
+}
+
+export function Spinner({ size = 'md', style: extraStyle = {} }) {
+  const s = SPINNER_SIZES[size] || SPINNER_SIZES.md
   return (
-    <div
-      className={`
-        ${sizes[size]}
-        border-surface-200 border-t-brand-600
-        rounded-full animate-spin flex-shrink-0
-        ${className}
-      `}
-    />
+    <div style={{
+      width: s.width,
+      height: s.height,
+      borderRadius: '50%',
+      border: `${s.borderWidth}px solid ${tokens.surface200}`,
+      borderTopColor: tokens.brand600,
+      animation: 'spin 0.8s linear infinite',
+      flexShrink: 0,
+      ...extraStyle,
+    }} />
   )
 }
 
-/* ─── LoadingPage ─── */
+// ── LoadingPage ──────────────────────────────────────────────────────────────
 export function LoadingPage() {
   return (
-    <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-      <div className="flex flex-col items-center gap-3">
+    <div style={{
+      flex: 1,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '60vh',
+    }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
         <Spinner size="xl" />
-        <p className="text-sm text-surface-400 font-medium">Loading…</p>
+        <p style={{
+          fontSize: 14,
+          color: tokens.surface400,
+          fontWeight: 500,
+          fontFamily: "'DM Sans', system-ui, sans-serif",
+        }}>
+          Loading…
+        </p>
       </div>
     </div>
   )
 }
 
-/* ─── PageSpinner (full screen) ─── */
+// ── PageSpinner ──────────────────────────────────────────────────────────────
 export function PageSpinner() {
   return (
-    <div className="fixed inset-0 bg-surface-50 flex items-center justify-center z-50">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-10 h-10 bg-brand-600 rounded-2xl flex items-center justify-center shadow-lg">
-          <span className="text-white text-sm font-bold">TF</span>
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      background: tokens.surface50,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 50,
+    }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+        <div style={{
+          width: 40,
+          height: 40,
+          background: tokens.brand600,
+          borderRadius: 16,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 8px 24px rgba(20,20,42,0.10), 0 0 0 1px rgba(20,20,42,0.04)',
+        }}>
+          <span style={{
+            color: 'white',
+            fontSize: 14,
+            fontWeight: 700,
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+          }}>
+            TF
+          </span>
         </div>
         <Spinner size="lg" />
       </div>
@@ -87,18 +228,51 @@ export function PageSpinner() {
   )
 }
 
-/* ─── EmptyState ─── */
-export function EmptyState({ icon, title, description, action, className = '' }) {
+// ── EmptyState ───────────────────────────────────────────────────────────────
+export function EmptyState({ icon, title, description, action }) {
   return (
-    <div className={`empty-state ${className}`}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center',
+      padding: '64px 24px',
+    }}>
       {icon && (
-        <div className="w-14 h-14 bg-surface-100 rounded-2xl flex items-center justify-center text-2xl mb-4 text-surface-400">
+        <div style={{
+          width: 56,
+          height: 56,
+          background: tokens.surface100,
+          borderRadius: 16,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 24,
+          marginBottom: 16,
+          color: tokens.surface400,
+        }}>
           {icon}
         </div>
       )}
-      <h3 className="text-sm font-semibold text-surface-700 mb-1">{title}</h3>
+      <h3 style={{
+        fontSize: 14,
+        fontWeight: 600,
+        color: tokens.surface700,
+        marginBottom: 4,
+        fontFamily: "'DM Sans', system-ui, sans-serif",
+      }}>
+        {title}
+      </h3>
       {description && (
-        <p className="text-sm text-surface-400 max-w-xs leading-relaxed mb-5">
+        <p style={{
+          fontSize: 14,
+          color: tokens.surface400,
+          maxWidth: 280,
+          lineHeight: 1.6,
+          marginBottom: 20,
+          fontFamily: "'DM Sans', system-ui, sans-serif",
+        }}>
           {description}
         </p>
       )}
@@ -107,20 +281,38 @@ export function EmptyState({ icon, title, description, action, className = '' })
   )
 }
 
-/* ─── Skeleton primitives ─── */
-export function SkeletonLine({ className = 'h-4 w-full' }) {
-  return <div className={`skeleton ${className}`} />
+// ── Skeleton ─────────────────────────────────────────────────────────────────
+const skeletonBase = {
+  background: `linear-gradient(90deg, ${tokens.surface100} 25%, ${tokens.surface50} 50%, ${tokens.surface100} 75%)`,
+  backgroundSize: '200% 100%',
+  borderRadius: 6,
+  animation: 'shimmer 1.5s infinite',
+}
+
+export function SkeletonLine({ style: extraStyle = {} }) {
+  return (
+    <div style={{ height: 16, width: '100%', ...skeletonBase, ...extraStyle }} />
+  )
 }
 
 export function SkeletonCard() {
   return (
-    <div className="card p-5 space-y-3">
-      <SkeletonLine className="h-4 w-3/4" />
-      <SkeletonLine className="h-3 w-full" />
-      <SkeletonLine className="h-3 w-2/3" />
-      <div className="flex gap-2 pt-1">
-        <SkeletonLine className="h-6 w-16 rounded-full" />
-        <SkeletonLine className="h-6 w-20 rounded-full" />
+    <div style={{
+      background: 'white',
+      border: `1px solid ${tokens.surface150}`,
+      borderRadius: 16,
+      boxShadow: '0 1px 4px rgba(20,20,42,0.06), 0 0 0 1px rgba(20,20,42,0.04)',
+      padding: 20,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 12,
+    }}>
+      <SkeletonLine style={{ width: '75%' }} />
+      <SkeletonLine />
+      <SkeletonLine style={{ width: '66%' }} />
+      <div style={{ display: 'flex', gap: 8, paddingTop: 4 }}>
+        <SkeletonLine style={{ height: 24, width: 64, borderRadius: 99 }} />
+        <SkeletonLine style={{ height: 24, width: 80, borderRadius: 99 }} />
       </div>
     </div>
   )
@@ -128,75 +320,101 @@ export function SkeletonCard() {
 
 export function SkeletonTaskRow() {
   return (
-    <div className="card px-4 py-3 flex items-center gap-4">
-      <SkeletonLine className="h-2 w-2 rounded-full flex-shrink-0" />
-      <div className="flex-1 space-y-1.5">
-        <SkeletonLine className="h-3.5 w-1/2" />
-        <SkeletonLine className="h-3 w-1/4" />
+    <div style={{
+      background: 'white',
+      border: `1px solid ${tokens.surface150}`,
+      borderRadius: 16,
+      boxShadow: '0 1px 4px rgba(20,20,42,0.06)',
+      padding: '12px 16px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 16,
+    }}>
+      <SkeletonLine style={{ height: 8, width: 8, borderRadius: '50%', flexShrink: 0 }} />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <SkeletonLine style={{ width: '50%', height: 14 }} />
+        <SkeletonLine style={{ width: '25%', height: 12 }} />
       </div>
-      <SkeletonLine className="h-6 w-16 rounded-full" />
+      <SkeletonLine style={{ height: 24, width: 64, borderRadius: 99 }} />
     </div>
   )
 }
 
-/* ─── Avatar ───
-   IMPORTANT: Avatar background colors are mapped via inline style (not dynamic
-   Tailwind classes) so they are never purged in production builds.
-*/
-const AVATAR_PALETTE = [
-  '#7c3aed', // violet
-  '#3b82f6', // blue
-  '#10b981', // emerald
-  '#f97316', // orange
-  '#f43f5e', // rose
-  '#06b6d4', // cyan
-  '#d946ef', // fuchsia
-  '#14b8a6', // teal
-]
+// ── Avatar ────────────────────────────────────────────────────────────────────
+const AVATAR_SIZES = {
+  xs:   { width: 24, height: 24, fontSize: 10 },
+  sm:   { width: 28, height: 28, fontSize: 12 },
+  md:   { width: 32, height: 32, fontSize: 13 },
+  lg:   { width: 36, height: 36, fontSize: 13 },
+  xl:   { width: 40, height: 40, fontSize: 15 },
+  '2xl':{ width: 48, height: 48, fontSize: 18 },
+}
 
-export function Avatar({ name, size = 'md', className = '' }) {
+export function Avatar({ name, size = 'md', title: titleProp, style: extraStyle = {} }) {
   const bg = name
     ? AVATAR_PALETTE[name.charCodeAt(0) % AVATAR_PALETTE.length]
     : '#c4c4d4'
-
-  const sizes = {
-    xs:   'w-6 h-6 text-[10px]',
-    sm:   'w-7 h-7 text-xs',
-    md:   'w-8 h-8 text-sm',
-    lg:   'w-9 h-9 text-sm',
-    xl:   'w-10 h-10 text-base',
-    '2xl':'w-12 h-12 text-lg',
-  }
+  const s = AVATAR_SIZES[size] || AVATAR_SIZES.md
 
   return (
     <div
-      className={`
-        ${sizes[size]}
-        rounded-full flex items-center justify-center
-        text-white font-semibold flex-shrink-0 select-none
-        ${className}
-      `}
-      style={{ backgroundColor: bg }}
-      title={name}
+      title={titleProp || name}
+      style={{
+        width: s.width,
+        height: s.height,
+        fontSize: s.fontSize,
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: bg,
+        color: 'white',
+        fontWeight: 600,
+        flexShrink: 0,
+        userSelect: 'none',
+        fontFamily: "'DM Sans', system-ui, sans-serif",
+        ...extraStyle,
+      }}
     >
       {name?.charAt(0).toUpperCase() ?? '?'}
     </div>
   )
 }
 
-/* ─── AvatarGroup ─── */
+// ── AvatarGroup ───────────────────────────────────────────────────────────────
 export function AvatarGroup({ users = [], max = 4 }) {
   const visible = users.slice(0, max)
   const overflow = users.length - max
   return (
-    <div className="flex -space-x-2">
+    <div style={{ display: 'flex' }}>
       {visible.map((u, i) => (
-        <div key={u?.id ?? i} className="ring-2 ring-white rounded-full">
+        <div
+          key={u?.id ?? i}
+          style={{
+            marginLeft: i === 0 ? 0 : -8,
+            borderRadius: '50%',
+            boxShadow: '0 0 0 2px white',
+          }}
+        >
           <Avatar name={u?.name ?? u} size="sm" />
         </div>
       ))}
       {overflow > 0 && (
-        <div className="w-7 h-7 bg-surface-100 text-surface-600 rounded-full ring-2 ring-white flex items-center justify-center text-xs font-semibold">
+        <div style={{
+          width: 28,
+          height: 28,
+          background: tokens.surface100,
+          color: tokens.surface600,
+          borderRadius: '50%',
+          boxShadow: '0 0 0 2px white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 12,
+          fontWeight: 600,
+          marginLeft: -8,
+          fontFamily: "'DM Sans', system-ui, sans-serif",
+        }}>
           +{overflow}
         </div>
       )}
