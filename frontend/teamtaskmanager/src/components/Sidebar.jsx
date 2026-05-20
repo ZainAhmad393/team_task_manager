@@ -35,49 +35,51 @@ const Icons = {
       <path d="M7 2H3A1.5 1.5 0 001.5 3.5v7A1.5 1.5 0 003 12h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
     </svg>
   ),
-  ChevronRight: () => (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-      <path d="M4.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  ),
 }
 
 /* ── NavItem ── */
-function NavItem({ to, Icon, label, badge, end }) {
+function NavItem({ to, Icon, label, end }) {
   return (
     <NavLink
       to={to}
       end={end}
-      className={({ isActive }) =>
-        `flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[13.5px] font-medium
-         transition-all duration-150 cursor-pointer select-none group
-         ${isActive
-           ? 'bg-[var(--brand-50)] text-[var(--brand-700)] font-semibold'
-           : 'text-[var(--surface-500)] hover:text-[var(--surface-800)] hover:bg-[var(--surface-100)]'
-         }`
-      }
+      style={{ textDecoration: 'none' }}
     >
       {({ isActive }) => (
-        <>
-          <span
-            className="flex-shrink-0 transition-colors"
-            style={{ color: isActive ? 'var(--brand-600)' : 'inherit' }}
-          >
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 9,
+          padding: '7px 10px', borderRadius: 12,
+          fontSize: 13.5, fontWeight: isActive ? 600 : 500,
+          color: isActive ? 'var(--brand-700)' : 'var(--surface-500)',
+          background: isActive ? 'var(--brand-50)' : 'transparent',
+          cursor: 'pointer', userSelect: 'none',
+          transition: 'all 120ms',
+          marginBottom: 2,
+        }}
+          onMouseEnter={e => {
+            if (!isActive) {
+              e.currentTarget.style.background = 'var(--surface-100)'
+              e.currentTarget.style.color = 'var(--surface-800)'
+            }
+          }}
+          onMouseLeave={e => {
+            if (!isActive) {
+              e.currentTarget.style.background = 'transparent'
+              e.currentTarget.style.color = 'var(--surface-500)'
+            }
+          }}
+        >
+          <span style={{
+            flexShrink: 0,
+            color: isActive ? 'var(--brand-600)' : 'currentColor',
+            display: 'flex',
+          }}>
             <Icon />
           </span>
-          <span className="truncate flex-1">{label}</span>
-          {badge != null && (
-            <span
-              className="text-[10px] font-bold rounded-full px-1.5 py-0.5 min-w-[18px] text-center"
-              style={{
-                background: isActive ? 'var(--brand-100)' : 'var(--surface-100)',
-                color: isActive ? 'var(--brand-600)' : 'var(--surface-400)',
-              }}
-            >
-              {badge}
-            </span>
-          )}
-        </>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+            {label}
+          </span>
+        </div>
       )}
     </NavLink>
   )
@@ -102,39 +104,35 @@ export default function Sidebar({ teams = [], onClose }) {
   }
 
   return (
-    <aside
-      className="h-full flex flex-col"
-      style={{
-        width: '240px',
-        minWidth: '240px',
-        background: 'white',
-        borderRight: '1px solid var(--surface-150)',
-      }}
-    >
+    <aside style={{
+      width: 240, minWidth: 240,
+      height: '100%',
+      display: 'flex', flexDirection: 'column',
+      background: 'white',
+      borderRight: '1px solid var(--surface-150)',
+    }}>
       {/* ── Brand ── */}
-      <div
-        className="px-5 h-14 flex items-center gap-2.5 flex-shrink-0"
-        style={{ borderBottom: '1px solid var(--surface-100)' }}
-      >
-        {/* ✅ Fixed: import-based logo with proper sizing */}
+      <div style={{
+        padding: '0 20px', height: 56,
+        display: 'flex', alignItems: 'center', gap: 10,
+        flexShrink: 0,
+        borderBottom: '1px solid var(--surface-100)',
+      }}>
         <img
-  src={logo}
-  alt="TaskFlow"
-  style={{ width: 28, height: 28, objectFit: 'contain', flexShrink: 0, display: 'block' }}
-/>
-        <p
-          className="font-bold text-sm tracking-tight leading-none"
-          style={{ color: 'var(--surface-900)' }}
-        >
+          src={logo}
+          alt="TaskFlow"
+          style={{ width: 28, height: 28, objectFit: 'contain', flexShrink: 0, display: 'block' }}
+        />
+        <p style={{ fontWeight: 700, fontSize: 14, letterSpacing: '-0.02em', color: 'var(--surface-900)', margin: 0 }}>
           TaskFlow
         </p>
       </div>
 
       {/* ── Navigation ── */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto scrollbar-none">
+      <nav style={{ flex: 1, padding: '16px 12px', overflowY: 'auto', scrollbarWidth: 'none' }}>
 
         {/* Main nav */}
-        <div className="space-y-0.5 mb-5">
+        <div style={{ marginBottom: 20 }}>
           <NavItem to="/dashboard" Icon={Icons.Dashboard} label="Dashboard" end />
           <NavItem to="/tasks"     Icon={Icons.Tasks}     label="My Tasks" />
           <NavItem to="/teams"     Icon={Icons.Teams}     label="Teams" />
@@ -143,67 +141,88 @@ export default function Sidebar({ teams = [], onClose }) {
         {/* Teams list */}
         {teams.length > 0 && (
           <div>
-            <p
-              className="px-2.5 pb-2 text-[10.5px] font-bold uppercase tracking-widest"
-              style={{ color: 'var(--surface-400)' }}
-            >
+            <p style={{
+              padding: '0 10px 8px', fontSize: 10.5, fontWeight: 700,
+              textTransform: 'uppercase', letterSpacing: '0.08em',
+              color: 'var(--surface-400)', margin: 0,
+            }}>
               Your Teams
             </p>
-            <div className="space-y-0.5">
-              {teams.map((team) => (
-                <NavLink
-                  key={team.id}
-                  to={`/teams/${team.id}`}
-                  onClick={onClose}
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-[13px] transition-all cursor-pointer
-                     ${isActive
-                       ? 'bg-[var(--brand-50)] text-[var(--brand-700)] font-semibold'
-                       : 'text-[var(--surface-500)] hover:bg-[var(--surface-50)] hover:text-[var(--surface-800)]'
-                     }`
-                  }
-                >
-                  <span
-                    className="w-2 h-2 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: team.color || 'var(--brand-500)' }}
-                  />
-                  <span className="truncate flex-1">{team.name}</span>
-                  <span
-                    className="text-[11px] flex-shrink-0"
-                    style={{ color: 'var(--surface-400)' }}
+            {teams.map((team) => (
+              <NavLink
+                key={team.id}
+                to={`/teams/${team.id}`}
+                onClick={onClose}
+                style={{ textDecoration: 'none' }}
+              >
+                {({ isActive }) => (
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    padding: '6px 10px', borderRadius: 12,
+                    fontSize: 13, cursor: 'pointer',
+                    color: isActive ? 'var(--brand-700)' : 'var(--surface-500)',
+                    background: isActive ? 'var(--brand-50)' : 'transparent',
+                    fontWeight: isActive ? 600 : 400,
+                    transition: 'all 120ms', marginBottom: 2,
+                  }}
+                    onMouseEnter={e => {
+                      if (!isActive) {
+                        e.currentTarget.style.background = 'var(--surface-50)'
+                        e.currentTarget.style.color = 'var(--surface-800)'
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      if (!isActive) {
+                        e.currentTarget.style.background = 'transparent'
+                        e.currentTarget.style.color = 'var(--surface-500)'
+                      }
+                    }}
                   >
-                    {team._count?.tasks ?? 0}
-                  </span>
-                </NavLink>
-              ))}
-            </div>
+                    <span style={{
+                      width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
+                      background: team.color || 'var(--brand-500)',
+                    }} />
+                    <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {team.name}
+                    </span>
+                    <span style={{ fontSize: 11, color: 'var(--surface-400)', flexShrink: 0 }}>
+                      {team._count?.tasks ?? 0}
+                    </span>
+                  </div>
+                )}
+              </NavLink>
+            ))}
           </div>
         )}
       </nav>
 
       {/* ── User Profile ── */}
-      <div
-        className="p-3 flex-shrink-0"
-        style={{ borderTop: '1px solid var(--surface-100)' }}
-      >
+      <div style={{ padding: 12, flexShrink: 0, borderTop: '1px solid var(--surface-100)' }}>
         <div
-          className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-colors group cursor-default"
-          style={{ background: 'transparent' }}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: '8px 10px', borderRadius: 12,
+            cursor: 'default', background: 'transparent',
+            transition: 'background 120ms',
+          }}
           onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-50)'}
           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
         >
           <Avatar name={user?.name} size="sm" />
-          <div className="flex-1 min-w-0">
-            <p
-              className="text-sm font-semibold truncate leading-tight"
-              style={{ color: 'var(--surface-900)' }}
-            >
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{
+              fontSize: 14, fontWeight: 600,
+              color: 'var(--surface-900)',
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              margin: 0, lineHeight: 1.3,
+            }}>
               {user?.name}
             </p>
-            <p
-              className="text-[11px] truncate leading-tight mt-0.5"
-              style={{ color: 'var(--surface-400)' }}
-            >
+            <p style={{
+              fontSize: 11, color: 'var(--surface-400)',
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              margin: '2px 0 0', lineHeight: 1.3,
+            }}>
               {user?.email}
             </p>
           </div>
@@ -211,39 +230,29 @@ export default function Sidebar({ teams = [], onClose }) {
             onClick={handleLogout}
             disabled={loggingOut}
             title="Sign out"
-            className="
-              opacity-0 group-hover:opacity-100 transition-all
-              p-1.5 rounded-lg
-              disabled:cursor-wait disabled:opacity-30
-              flex-shrink-0
-            "
-            style={{ color: 'var(--surface-400)' }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = 'var(--danger-bg)'
-              e.currentTarget.style.color = 'var(--danger-text)'
+            style={{
+              padding: 6, borderRadius: 8, border: 'none',
+              background: 'transparent', cursor: loggingOut ? 'wait' : 'pointer',
+              color: 'var(--surface-400)', flexShrink: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              opacity: loggingOut ? 0.3 : 1,
+              transition: 'all 120ms',
             }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'transparent'
-              e.currentTarget.style.color = 'var(--surface-400)'
-            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--danger-bg)'; e.currentTarget.style.color = 'var(--danger-text)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--surface-400)' }}
           >
             {loggingOut ? <Spinner size="xs" /> : <Icons.Logout />}
           </button>
         </div>
 
-        {/* Role badge */}
         {user?.role === 'ADMIN' && (
-          <div
-            className="mt-2 mx-2 px-3 py-1 rounded-lg text-center"
-            style={{
-              background: 'var(--brand-50)',
-              border: '1px solid var(--brand-100)',
-            }}
-          >
-            <p
-              className="text-[10px] font-bold uppercase tracking-widest"
-              style={{ color: 'var(--brand-600)' }}
-            >
+          <div style={{
+            marginTop: 8, marginLeft: 8, marginRight: 8,
+            padding: '4px 12px', borderRadius: 8, textAlign: 'center',
+            background: 'var(--brand-50)',
+            border: '1px solid var(--brand-100)',
+          }}>
+            <p style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--brand-600)', margin: 0 }}>
               System Admin
             </p>
           </div>
