@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { teamsApi } from '../services/api'
 import TeamCard from '../components/Teamcard.jsx'
-import TeamFormModal from '../components/Teamformmodal.jsx'
+import { TeamFormModal } from '../components/Teamformmodal.jsx'
 import { LoadingPage, EmptyState } from '../components/ui/index.jsx'
 import useAuthStore from '../context/Authstore.js'
 import toast from 'react-hot-toast'
@@ -48,13 +48,23 @@ export default function Teams() {
   if (loading) return <LoadingPage />
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto w-full animate-fade-up">
+    <div style={{
+      padding: '28px 32px',
+      maxWidth: 1280,
+      margin: '0 auto',
+      width: '100%',
+      animation: 'fadeUp 0.35s var(--ease-spring) both',
+    }}>
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>
-          <h1 className="text-2xl font-bold text-surface-900 tracking-tight">Teams</h1>
-          <p className="text-surface-500 text-sm mt-0.5">
+          <h1 style={{
+            fontSize: 22, fontWeight: 700,
+            color: 'var(--surface-900)',
+            letterSpacing: '-0.03em', margin: 0,
+          }}>Teams</h1>
+          <p style={{ fontSize: 13, color: 'var(--surface-500)', marginTop: 2 }}>
             {teams.length} team{teams.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -81,17 +91,25 @@ export default function Teams() {
           }
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {teams.map(team => (
-            <TeamCard
-              key={team.id}
-              team={team}
-              currentUserId={user?.id}
-              onEdit={(t) => setFormModal({ open: true, team: t })}
-              onDelete={handleDelete}
-            />
-          ))}
-        </div>
+        /* Responsive grid via inline style + style tag */
+        <>
+          <div className="teams-grid" style={{ display: 'grid', gap: 16 }}>
+            {teams.map(team => (
+              <TeamCard
+                key={team.id}
+                team={team}
+                currentUserId={user?.id}
+                onEdit={(t) => setFormModal({ open: true, team: t })}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+          <style>{`
+            .teams-grid { grid-template-columns: 1fr; }
+            @media (min-width: 768px)  { .teams-grid { grid-template-columns: repeat(2, 1fr); } }
+            @media (min-width: 1280px) { .teams-grid { grid-template-columns: repeat(3, 1fr); } }
+          `}</style>
+        </>
       )}
 
       <TeamFormModal

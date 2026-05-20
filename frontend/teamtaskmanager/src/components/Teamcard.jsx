@@ -7,68 +7,150 @@ export default function TeamCard({ team, onEdit, onDelete, currentUserId }) {
 
   return (
     <div
-      className="card p-5 hover:shadow-md hover:border-brand-200 transition-all duration-200 cursor-pointer group"
       onClick={() => navigate(`/teams/${team.id}`)}
+      style={{
+        background: 'white',
+        border: '1px solid var(--surface-150)',
+        borderRadius: 16,
+        boxShadow: 'var(--shadow-sm)',
+        cursor: 'pointer',
+        transition: 'all 200ms var(--ease-spring)',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.boxShadow = 'var(--shadow-md)'
+        e.currentTarget.style.borderColor = 'var(--brand-200)'
+        e.currentTarget.style.transform = 'translateY(-2px)'
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.boxShadow = 'var(--shadow-sm)'
+        e.currentTarget.style.borderColor = 'var(--surface-150)'
+        e.currentTarget.style.transform = 'translateY(0)'
+      }}
     >
       {/* Color bar */}
-      <div className="h-1.5 rounded-full mb-4 -mx-5 -mt-5 rounded-t-2xl" style={{ backgroundColor: team.color }} />
+      <div style={{ height: 6, background: team.color || '#6366f1', flexShrink: 0 }} />
 
-      {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div>
-          <h3 className="font-display font-bold text-gray-900 group-hover:text-brand-700 transition-colors">
-            {team.name}
-          </h3>
-          {team.description && (
-            <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{team.description}</p>
+      <div style={{ padding: 20 }}>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: 10, flexShrink: 0,
+              background: team.color || '#6366f1',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white', fontSize: 12, fontWeight: 700,
+            }}>
+              {team.name?.charAt(0).toUpperCase()}
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <h3 style={{
+                fontSize: 14, fontWeight: 700,
+                color: 'var(--surface-900)',
+                margin: 0, overflow: 'hidden',
+                textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
+                {team.name}
+              </h3>
+              <p style={{ fontSize: 11, color: 'var(--surface-400)', margin: 0, fontWeight: 500 }}>
+                {isOwner ? 'Owner' : `by ${team.owner?.name}`}
+              </p>
+            </div>
+          </div>
+
+          {isOwner && (
+            <div className="team-card-actions" style={{ display: 'flex', gap: 4 }}>
+              <button
+                onClick={(e) => { e.stopPropagation(); onEdit?.(team) }}
+                style={{
+                  width: 28, height: 28, borderRadius: 8, border: 'none',
+                  background: 'transparent', cursor: 'pointer',
+                  color: 'var(--surface-400)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 13,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-100)'; e.currentTarget.style.color = 'var(--surface-700)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--surface-400)' }}
+                title="Edit team"
+              >✏</button>
+              <button
+                onClick={(e) => { e.stopPropagation(); onDelete?.(team) }}
+                style={{
+                  width: 28, height: 28, borderRadius: 8, border: 'none',
+                  background: 'transparent', cursor: 'pointer',
+                  color: 'var(--surface-400)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 13,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--danger-bg)'; e.currentTarget.style.color = 'var(--danger-text)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--surface-400)' }}
+                title="Delete team"
+              >✕</button>
+            </div>
           )}
         </div>
-        {isOwner && (
-          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              onClick={(e) => { e.stopPropagation(); onEdit?.(team) }}
-              className="p-1.5 rounded-lg hover:bg-surface-100 text-gray-400 hover:text-gray-700 text-sm"
-              title="Edit team"
-            >✏</button>
-            <button
-              onClick={(e) => { e.stopPropagation(); onDelete?.(team) }}
-              className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 text-sm"
-              title="Delete team"
-            >✕</button>
+
+        {/* Description */}
+        {team.description && (
+          <p style={{
+            fontSize: 12, color: 'var(--surface-500)',
+            lineHeight: 1.5, marginBottom: 12,
+            display: '-webkit-box',
+            WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}>
+            {team.description}
+          </p>
+        )}
+
+        {/* Stats */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+          {[
+            `${team._count?.tasks ?? 0} tasks`,
+            `${team._count?.members ?? 0} members`,
+          ].map(label => (
+            <span key={label} style={{
+              fontSize: 12, fontWeight: 600,
+              color: 'var(--surface-500)',
+              background: 'var(--surface-100)',
+              padding: '4px 10px', borderRadius: 99,
+            }}>
+              {label}
+            </span>
+          ))}
+        </div>
+
+        {/* Member avatars */}
+        {team.members && team.members.length > 0 && (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex' }}>
+              {team.members.slice(0, 5).map((m, i) => (
+                <div key={m.id} style={{
+                  marginLeft: i === 0 ? 0 : -8,
+                  boxShadow: '0 0 0 2px white',
+                  borderRadius: '50%',
+                }}>
+                  <Avatar name={m.user?.name} size="sm" />
+                </div>
+              ))}
+              {team.members.length > 5 && (
+                <div style={{
+                  width: 28, height: 28, marginLeft: -8,
+                  background: 'var(--surface-100)',
+                  borderRadius: '50%',
+                  boxShadow: '0 0 0 2px white',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 12, fontWeight: 600, color: 'var(--surface-500)',
+                }}>
+                  +{team.members.length - 5}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
-
-      {/* Stats */}
-      <div className="flex items-center gap-3 mb-4">
-        <span className="text-xs font-medium text-gray-500 bg-surface-100 px-2.5 py-1 rounded-full">
-          {team._count?.tasks ?? 0} tasks
-        </span>
-        <span className="text-xs font-medium text-gray-500 bg-surface-100 px-2.5 py-1 rounded-full">
-          {team._count?.members ?? 0} members
-        </span>
-      </div>
-
-      {/* Member avatars */}
-      {team.members && (
-        <div className="flex items-center gap-1.5">
-          <div className="flex -space-x-2">
-            {team.members.slice(0, 5).map((m) => (
-              <div key={m.id} title={m.user?.name} className="ring-2 ring-white rounded-full">
-                <Avatar name={m.user?.name} size="sm" />
-              </div>
-            ))}
-            {team.members.length > 5 && (
-              <div className="w-8 h-8 bg-surface-100 rounded-full ring-2 ring-white flex items-center justify-center text-xs text-gray-500 font-medium">
-                +{team.members.length - 5}
-              </div>
-            )}
-          </div>
-          <span className="text-xs text-gray-400 ml-1">
-            {isOwner ? 'You own this' : `by ${team.owner?.name}`}
-          </span>
-        </div>
-      )}
     </div>
   )
 }

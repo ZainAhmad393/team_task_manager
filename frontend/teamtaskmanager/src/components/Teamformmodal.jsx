@@ -3,7 +3,11 @@ import Modal from './Modal'
 import { teamsApi } from '../services/api'
 import toast from 'react-hot-toast'
 
-const COLORS = ['#6366f1', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6']
+const COLORS = [
+  '#6366f1', '#8b5cf6', '#3b82f6', '#06b6d4',
+  '#10b981', '#f59e0b', '#ef4444', '#ec4899',
+  '#84cc16', '#f97316',
+]
 
 const defaultForm = { name: '', description: '', color: '#6366f1' }
 
@@ -25,7 +29,6 @@ export default function TeamFormModal({ isOpen, onClose, onSuccess, team = null 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.name.trim()) return setErrors({ name: 'Team name is required' })
-
     setLoading(true)
     try {
       if (isEdit) {
@@ -46,58 +49,99 @@ export default function TeamFormModal({ isOpen, onClose, onSuccess, team = null 
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? 'Edit Team' : 'Create Team'}>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <Modal isOpen={isOpen} onClose={onClose}
+      title={isEdit ? 'Edit Team' : 'Create Team'}
+      description={isEdit ? 'Update your team details.' : 'Give your team a name and identity.'}
+    >
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+        {/* Name */}
         <div>
-          <label className="label">Team Name *</label>
+          <label className="label label-required">Team Name</label>
           <input
             value={form.name}
             onChange={(e) => { setForm(f => ({ ...f, name: e.target.value })); setErrors({}) }}
             placeholder="Design Team, Engineering..."
-            className={`input ${errors.name ? 'border-red-400' : ''}`}
+            className={`input ${errors.name ? 'input-error' : ''}`}
+            autoFocus
           />
-          {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
+          {errors.name && (
+            <p style={{ fontSize: 12, color: 'var(--danger-text)', marginTop: 6, fontWeight: 500 }}>
+              {errors.name}
+            </p>
+          )}
         </div>
 
+        {/* Description */}
         <div>
           <label className="label">Description</label>
           <textarea
             value={form.description}
             onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))}
-            placeholder="What does this team do?"
+            placeholder="What does this team focus on?"
             rows={3}
-            className="input resize-none"
+            className="input"
+            style={{ resize: 'none' }}
           />
         </div>
 
+        {/* Color */}
         <div>
           <label className="label">Team Color</label>
-          <div className="flex gap-2 flex-wrap">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             {COLORS.map((c) => (
               <button
                 key={c}
                 type="button"
                 onClick={() => setForm(f => ({ ...f, color: c }))}
-                className={`w-8 h-8 rounded-full transition-transform hover:scale-110 ${form.color === c ? 'ring-2 ring-offset-2 ring-gray-400 scale-110' : ''}`}
-                style={{ backgroundColor: c }}
+                style={{
+                  width: 32, height: 32, borderRadius: '50%',
+                  background: c, border: 'none', cursor: 'pointer',
+                  transition: 'transform 150ms',
+                  transform: form.color === c ? 'scale(1.2)' : 'scale(1)',
+                  boxShadow: form.color === c ? `0 0 0 3px white, 0 0 0 5px ${c}` : 'none',
+                  outline: 'none',
+                }}
               />
             ))}
           </div>
         </div>
 
         {/* Preview */}
-        <div className="flex items-center gap-2.5 p-3 bg-surface-50 rounded-xl">
-          <span className="w-3 h-3 rounded-full" style={{ backgroundColor: form.color }} />
-          <span className="text-sm font-medium text-gray-700">{form.name || 'Team name preview'}</span>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 12,
+          padding: 12, background: 'var(--surface-50)',
+          borderRadius: 12, border: '1px solid var(--surface-100)',
+        }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 10, flexShrink: 0,
+            background: form.color,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'white', fontSize: 12, fontWeight: 700,
+          }}>
+            {form.name?.charAt(0)?.toUpperCase() || '?'}
+          </div>
+          <div>
+            <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--surface-900)', margin: 0 }}>
+              {form.name || 'Team name preview'}
+            </p>
+            <p style={{ fontSize: 12, color: 'var(--surface-400)', margin: 0 }}>
+              {form.description || 'No description'}
+            </p>
+          </div>
         </div>
 
-        <div className="flex justify-end gap-3 pt-2">
+        {/* Actions */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, paddingTop: 8 }}>
           <button type="button" onClick={onClose} className="btn-secondary">Cancel</button>
           <button type="submit" disabled={loading} className="btn-primary">
-            {loading ? '⟳ Saving…' : isEdit ? 'Save Changes' : 'Create Team'}
+            {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Team'}
           </button>
         </div>
       </form>
     </Modal>
   )
 }
+
+/* Named export for compatibility */
+export { TeamFormModal }
